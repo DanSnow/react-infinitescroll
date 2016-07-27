@@ -121,8 +121,12 @@ class InfiniteScroll extends Component {
       this.pool.push(this.state.items[0].key)
       this.calculateItem()
     } else if (scrollLength < (this.start + 2) * itemHeight) {
-      this.start -= 1
-      this.pool.push(last(this.state.items).key)
+      const itemLength = this.state.items.length
+      const nextStart = Math.max(Math.floor(scrollLength / itemHeight) - 2, 0)
+      for (let i = 0; i < this.start - nextStart; ++i) {
+        this.pool.push(this.state.items[itemLength - i - 1].key)
+      }
+      this.start = nextStart
       this.calculateItem(this.prependItem)
     }
   }
