@@ -1,20 +1,13 @@
-var path = require('path');
-var webpack = require('webpack');
+var path = require('path')
+var webpack = require('webpack')
 
-module.exports = {
-  devtool: 'eval',
-  entry: [
-    'webpack-dev-server/client?http://localhost:3000',
-    'webpack/hot/only-dev-server',
-    './index'
-  ],
+var baseConfig = {
   output: {
     path: path.join(__dirname, 'dist'),
     filename: 'bundle.js',
-    publicPath: '/static/'
+    publicPath: 'dist/'
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin()
   ],
   resolve: {
@@ -26,11 +19,6 @@ module.exports = {
   module: {
     loaders: [{
       test: /\.js$/,
-      loaders: ['react-hot', 'babel'],
-      exclude: /node_modules/,
-      include: __dirname
-    }, {
-      test: /\.js$/,
       loaders: ['babel'],
       include: path.join(__dirname, '..', '..', 'src')
     }, {
@@ -38,4 +26,30 @@ module.exports = {
       loaders: ['style', 'css']
     }]
   }
-};
+}
+
+if (process.env.NODE_ENV === 'production') {
+  baseConfig.entry = './index'
+  baseConfig.module.loaders.push({
+    test: /\.js$/,
+    loaders: ['babel'],
+    exclude: /node_modules/,
+    include: __dirname
+  })
+} else {
+  baseConfig. devtool = 'eval'
+  baseConfig.entry = [
+    'webpack-dev-server/client?http://localhost:3000',
+    'webpack/hot/only-dev-server',
+    './index'
+  ]
+  baseConfig.module.loaders.push({
+    test: /\.js$/,
+    loaders: ['react-hot', 'babel'],
+    exclude: /node_modules/,
+    include: __dirname
+  })
+  baseConfig.plugins.push(new webpack.HotModuleReplacementPlugin())
+}
+
+module.exports = baseConfig
