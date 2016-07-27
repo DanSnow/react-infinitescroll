@@ -5,7 +5,7 @@ var baseConfig = {
   output: {
     path: path.join(__dirname, 'dist'),
     filename: 'bundle.js',
-    publicPath: 'dist/'
+    publicPath: '/dist/'
   },
   plugins: [
     new webpack.NoErrorsPlugin()
@@ -30,6 +30,7 @@ var baseConfig = {
 
 if (process.env.NODE_ENV === 'production') {
   baseConfig.entry = './index'
+  baseConfig.output.publicPath = 'dist/'
   baseConfig.module.loaders.push({
     test: /\.js$/,
     loaders: ['babel'],
@@ -37,7 +38,7 @@ if (process.env.NODE_ENV === 'production') {
     include: __dirname
   })
 } else {
-  baseConfig. devtool = 'eval'
+  baseConfig.devtool = 'eval'
   baseConfig.entry = [
     'webpack-dev-server/client?http://localhost:3000',
     'webpack/hot/only-dev-server',
